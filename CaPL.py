@@ -145,13 +145,6 @@ class query_attribute_value(nn.Module):
         b = attribute.size()[0]
         q = self.to_q(self.prompt)
         k, v = self.to_k(attribute), self.to_v(attribute)
-        # out = torch.zeros(b, self.num_p, 512).to(device)
-        # for id in range(b):
-        #     k_i, v_i = k[id].unsqueeze(0), v[id].unsqueeze(0)
-        #     sim_i = torch.einsum('a d, y d -> a y', q, k_i) * self.scale
-        #     attn_i = sim_i.softmax(dim=-1)
-        #     out_i = torch.einsum('a y, y d -> a d', attn_i, v_i)
-        #     out[id] = self.out(out_i)
         k = k.unsqueeze(1).repeat(1, b, 1)
         sim = torch.einsum('a d, n b d -> n a b', q, k) * self.scale
         attn = sim.softmax(dim=-1)
@@ -360,28 +353,6 @@ def run_causal(cfg, netE, netA, clip_model, preprocess, device, hard_prompt):
                 tokenized_prompts = prompt_learner.tokenized_prompts
                 text_features = text_encoder(prompts, tokenized_prompts)
                 text_features = text_features / text_features.norm(dim=-1, keepdim=True)
-
-            #     text_features_base = text_features[:len(base_classnames)]
-            #     text_attribute_base = Query(text_features_base)
-            #     text_features_new = text_features[len(base_classnames):]
-            #     text_attribute_new = Query(text_features_new)
-
-            #     test_attribute_base = netA(test_features.float())
-            #     test_attribute_base = netD.query(test_attribute_base)
-            #     test_attribute_new = netA(test_features_new.float())
-            #     test_attribute_new = netD.query(test_attribute_new)
-
-            # eyes_base = torch.eye(a).to(device)
-            # eyes_base = eyes_base.unsqueeze(0).repeat(test_features.size()[0], 1, 1).unsqueeze(1).repeat(1, text_features_base.size()[0], 1, 1)
-            # logits_base = 100. * torch.einsum('b a d, c t d -> b c a t', test_attribute_base, text_attribute_base)
-            # logits_base = logits_base * eyes_base
-            # logits_base = logits_base.sum(dim=-1).sum(dim=-1)
-
-            # eyes_new = torch.eye(a).to(device)
-            # eyes_new = eyes_new.unsqueeze(0).repeat(test_features_new.size()[0], 1, 1).unsqueeze(1).repeat(1, text_features_new.size()[0], 1, 1)
-            # logits_new = 100. * torch.einsum('b a d, c t d -> b c a t', test_attribute_new, text_attribute_new)
-            # logits_new = logits_new * eyes_new
-            # logits_new = logits_new.sum(dim=-1).sum(dim=-1)
 
             # new
             logits_new = 100. * test_features_new.float() @ text_features.T.float()[:, len(base_classnames):]
