@@ -1,4 +1,4 @@
-# CPLNet
+# CaPL
 This is the official repo for our work 'Causality-guided Prompt Learning for Vision-language Models via Visual Granulation', which is accepted by ICCV 2025.
 
 ## Setup
