@@ -10,7 +10,7 @@ Paper Link: [arXiv](http://arxiv.org/abs/2509.03803)
 We construct factual and counterfactual granules based on the disentangled non-individualized and individualized attributes for text prompt learning. 
 
 ### Prompt Learner
-The prompt learner is designed following [CoOp](https://arxiv.org/pdf/2109.01134) (Zhou et al., IJCV 2022) and [SHIP](https://arxiv.org/pdf/2307.07397) (Wang et al., ICCV 2023). 
+The prompt learner is designed and initialized following [CoOp](https://arxiv.org/pdf/2109.01134) (Zhou et al., IJCV 2022) and [SHIP](https://arxiv.org/pdf/2307.07397) (Wang et al., ICCV 2023). 
 
 ### Feature Disentanglement
 Two encoders are involed to extract non-individualized and individualized attributes from visual features, and a BBDM-based network is used to optimize the disentangled attributes. The BBDM-based network is designed following [BBDM](https://openaccess.thecvf.com/content/CVPR2023/papers/Li_BBDM_Image-to-Image_Translation_With_Brownian_Bridge_Diffusion_Models_CVPR_2023_paper.pdf) (Li et al., CVPR 2023), with an additional conditional input incorporated into the original design.
