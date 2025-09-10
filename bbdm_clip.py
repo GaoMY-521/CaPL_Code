@@ -127,63 +127,6 @@ class GaussianDiffusion1D(nn.Module):
             raise NotImplementedError
         return x0_recon
 
-    @torch.no_grad()
-    def sample(self, y, mode=None):
-        device = y.device
-        if self.mid_step:
-            if self.scheduler == 'linear':
-                midsteps = torch.arange(self.num_timesteps - 1, 1,
-                                        step=-((self.num_timesteps - 1) / (self.sampling_timesteps - 2))).long()
-                self.steps = torch.cat((midsteps, torch.Tensor([1, 0]).long()), dim=0)
-            elif self.scheduler == 'cosine':
-                steps = np.linspace(start=-1, stop=self.num_timesteps - 1, num=self.sampling_timesteps + 1)
-                steps = (np.cos(steps / self.num_timesteps * np.pi) + 1.) / 2. * self.num_timesteps
-                self.steps = torch.from_numpy(steps)
-        else:
-            self.steps = torch.arange(self.num_timesteps-1, -1, -1)
-
-        times = list(self.steps.int().tolist())
-        time_pairs = list(zip(times[:-1], times[1:]))
-
-        # noise = torch.randn_like(y)
-        # img = noise
-        img = y
-        condition = y.view(y.size()[0], -1)
-
-        for time, time_next in tqdm(time_pairs, desc = 'sampling loop time step'):
-            time_cond = torch.full((img.size()[0],), time, device=device, dtype=torch.float32)
-
-            objective_recon = self.model(img, time_cond, condition)
-            x0_recon = self.predict_x0_from_objective(img, y, time_cond, objective_recon=objective_recon)
-            if self.clip_denoised:
-                x0_recon.clamp_(-1., 1.)
-
-            if mode == 'half':
-                if time_next < 500:
-                    img = x0_recon
-                    continue
-
-            if time_next == 0:
-                img = x0_recon
-                continue
-
-            m_t = self.m_t[time]
-            m_nt = self.m_t[time_next]
-            var_t = self.variance_t[time]
-            var_nt = self.variance_t[time_next]
-            sigma2_t = (var_t - var_nt * (1. - m_t) ** 2 / (1. - m_nt) ** 2) * var_nt / var_t
-            sigma_t = torch.sqrt(sigma2_t) * self.eta
-            delta_t_nt = var_t - var_nt * (1. - m_t) ** 2 / (1. - m_nt **2)
-
-            noise = torch.randn_like(img)
-            x_tminus_mean = (1. - m_nt) * x0_recon + m_nt * y + torch.sqrt((var_nt - sigma2_t) / var_t) * \
-                            (img - (1. - m_t) * x0_recon - m_t * y)
-
-            img = x_tminus_mean + sigma_t * noise
-
-        img = unnormalize_to_zero_to_one(img)
-        return img
-
     def q_sample(self, x0, y, t, noise=None):
         noise = default(noise, lambda: torch.randn_like(x0))
         # noise_end = torch.randn_like(y)
