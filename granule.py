@@ -82,7 +82,7 @@ class Granule(nn.Module):
         a = indi_value.size()[1]
 
         factual_indi = torch.zeros(b, a, 2 * d).to(device)
-        counter_swap = torch.zeros(b, b, 1024).to(device)
+        counter_swap = torch.zeros(b, b, 2 * d).to(device)
         for i in range(b):
             temp_nonindi = nonindi[i]
             for k in range(a):
@@ -102,3 +102,4 @@ class Granule(nn.Module):
 
 
         return factual_indi, counter_swap
+
