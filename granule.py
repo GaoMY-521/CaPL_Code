@@ -19,7 +19,6 @@ from torch.distributions import uniform
 
 from bbdm_clip import GaussianDiffusion1D
 from bbdm_model import Unet1D
-from ema import EMA
 
 class Query(nn.Module):
     def __init__(self, dim, K, hard_prompt):
@@ -100,5 +99,6 @@ class Granule(nn.Module):
         factual_indi = factual_indi.view(b, a, -1)
         counter_swap = counter_swap.view(b * b, -1)
         counter_swap = self.net(counter_swap)
+
 
         return factual_indi, counter_swap
