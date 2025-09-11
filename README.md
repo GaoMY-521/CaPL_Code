@@ -22,12 +22,14 @@ For each visual feature, we first obtain K individualized visual representations
 For a batch of visual features, we swap their non-individualized attributes and individualzied attributes to construct counterfactual granules, resulting in ![formula](https://latex.codecogs.com/svg.latex?N^2) counterfactual granules in total. These counterfactual granules are recognized by calculating cosine similarity with prompted textual features in a ![formula](https://latex.codecogs.com/svg.latex?C_b)-class classification task (where ![formula](https://latex.codecogs.com/svg.latex?C_b) is the number of base classes). Each counterfactual granule is assigned the label corresponding to its individualized attribute.
 
 ### Loss Function
-Cross entropy loss for factual granules, cross entropy loss for counterfactual granules, cross entropy loss for original visual features, reconstruction loss for counterfactual granules, contrastive loss for counterfactual granules.
+Cross entropy loss for factual granules, cross entropy loss for counterfactual granules and reconstruction loss for counterfactual granules.
+
+Cross entropy loss for original visual features and contrastive loss for counterfactual granules are also used.
 
 ## Code
 The codes for constructing factual granules and counterfactual granules are in ```granule.py```.
 The codes for BBDM-based network are in ```bbdm_clip.py``` and ```bbdm_model.py```.
 
-Note: The complete code will be uploaded later since some related parts of this work is still under review. Users could refer to the mentioned papers and code files above.
+The complete code is coming soon.
 
 
