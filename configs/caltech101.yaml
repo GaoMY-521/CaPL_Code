@@ -1,0 +1,27 @@
+# ------ root_path/dataset_name ------
+root_path: 'data'
+
+
+# ------ Load Cache and Features ------
+load_cache: True
+load_pre_feat: True
+
+
+# ------ Hyperparamters ------
+search_hp: True
+
+search_scale: [12, 5]
+search_step: [200, 20]
+
+init_beta: 1
+init_alpha: 3
+
+
+# ------ Basic Config ------
+dataset: 'caltech101'
+shots: 16
+backbone: 'ViT-B-32.pt'
+
+lr: 0.001
+augment_epoch: 10
+train_epoch: 200
